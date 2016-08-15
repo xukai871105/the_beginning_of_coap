@@ -1,6 +1,6 @@
+#include <Arduino.h>
 #include <stdbool.h>
 #include <string.h>
-#include "Arduino.h"
 #include "coap.h"
 
 static char light = '0';
@@ -9,10 +9,10 @@ const uint16_t rsplen = 128;
 static char rsp[128] = "";
 void build_rsp(void);
 
-static int led = 13;
+static int led = 8;
 void endpoint_setup(void)
 {                
-    pinMode(led, OUTPUT);     
+    pinMode(led, OUTPUT);
     build_rsp();
 }
 
@@ -53,7 +53,7 @@ static int handle_put_light(coap_rw_buffer_t *scratch, const coap_packet_t *inpk
     }
 }
 
-const coap_endpoint_t endpoints[] =
+coap_endpoint_t endpoints[] =
 {
     {COAP_METHOD_GET, handle_get_well_known_core, &path_well_known_core, "ct=40"},
     {COAP_METHOD_GET, handle_get_hello, &path_hello, "ct=0"},
@@ -102,4 +102,3 @@ void build_rsp(void)
         ep++;
     }
 }
-
