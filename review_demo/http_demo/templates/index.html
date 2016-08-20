@@ -2,7 +2,7 @@
 <html>
 <head>
 <meta charset="utf-8">
-<title>Flask JQuery</title>
+<title>HTTP Demo</title>
 <!-- 插入jquery -->
 <script src="{{url_for('static', filename='jquery.js')}}"></script>
 <script type=text/javascript>
@@ -11,15 +11,19 @@ var $SCRIPT_ROOT = {{request.script_root|tojson|safe}};
 <script type=text/javascript>
 $(function() {
     function submit_form(e) {
-        $.getJSON($SCRIPT_ROOT + '/add', {   
+      $.ajax({
+        type: "post",
+        url: $SCRIPT_ROOT + '/value',
+        data: {                  
             a: $('input[name="a"]').val(),
             b: $('input[name="b"]').val(),
             now: new Date().getTime()
-        }, 
-        function(data) {
+        },
+        success: function(data) {
             $('#result').text(data.result);
-        });
-    };
+        }
+      });
+    }
     // 绑定click事件
     $('#calculate').bind('click', submit_form);
 });
