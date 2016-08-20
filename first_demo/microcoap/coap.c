@@ -6,8 +6,8 @@
 #include <stddef.h>
 #include "coap.h"
 
-extern void endpoint_setup(void);
-extern const coap_endpoint_t endpoints[];
+// extern void endpoint_setup(void);
+// extern const coap_endpoint_t endpoints[];
 
 #ifdef DEBUG
 void coap_dumpHeader(coap_header_t *hdr)
@@ -392,12 +392,11 @@ int coap_make_response(coap_rw_buffer_t *scratch, coap_packet_t *pkt, const uint
 
 // FIXME, if this looked in the table at the path before the method then
 // it could more easily return 405 errors
-int coap_handle_req(coap_rw_buffer_t *scratch, const coap_packet_t *inpkt, coap_packet_t *outpkt)
+int coap_handle_req(coap_rw_buffer_t *scratch, const coap_packet_t *inpkt, coap_packet_t *outpkt, const coap_endpoint_t *ep)
 {
     const coap_option_t *opt;
     uint8_t count;
     int i;
-    const coap_endpoint_t *ep = endpoints;
 
     while(NULL != ep->handler)
     {
@@ -407,7 +406,7 @@ int coap_handle_req(coap_rw_buffer_t *scratch, const coap_packet_t *inpkt, coap_
         {
             if (count != ep->path->count)
                 goto next;
-            for (i=0;i<count;i++)
+            for (i = 0; i < count; i++)
             {
                 if (opt[i].buf.len != strlen(ep->path->elems[i]))
                     goto next;
