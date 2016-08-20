@@ -1,5 +1,6 @@
 import asyncio
-
+# replace ip address here
+raspberry_ip_addrss = '192.168.0.8'
 class EchoClientProtocol(asyncio.Protocol):
     def __init__(self, message, loop):
         self.message = message
@@ -20,7 +21,7 @@ class EchoClientProtocol(asyncio.Protocol):
 loop = asyncio.get_event_loop()
 message = 'Hello World!'
 coro = loop.create_connection(lambda: EchoClientProtocol(message, loop),
-                              '192.168.0.8', 8080)
+                              raspberry_ip_addrss, 8090)
 loop.run_until_complete(coro)
 loop.run_forever()
 loop.close()
