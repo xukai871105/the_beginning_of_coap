@@ -4,16 +4,11 @@ app = Flask(__name__)
 
 @app.route("/")
 def index():
-# 主页面
     return render_template('index.html')
     
-@app.route('/value', methods=['GET', 'POST'])
+@app.route('/value', methods=['POST'])
 def cal_value():
-  if request.method == 'GET':
-    a = request.args.get('a', 0, type=int)
-    b = request.args.get('b', 0, type=int)
-    return jsonify(result = a + b)
-  elif request.method == 'POST':
+  if request.method == 'POST':
     a = request.form.get('a', 0, type=int)
     b = request.form.get('b', 0, type=int)
     return jsonify(result = a + b)
