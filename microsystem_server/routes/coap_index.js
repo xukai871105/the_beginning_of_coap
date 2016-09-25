@@ -10,15 +10,13 @@ route.post('/devices/{device_id}', function(req, res) {
     console.log('----------------------------------------');
     console.log('add sensor datapoint to database');
 
-    // var device_id = req.params['device_id'];
     var device_id = req.params.device_id;
     console.log('device id: %s', device_id);
 
     var payload = JSON.parse(req.payload);
-
-    var temp = payload['temp'];
-    var hum = payload['hum'];
-    var light = payload['light'];
+    var temp = payload.temp;
+    var hum = payload.hum;
+    var light = payload.light;
 
     var conn = mysql.createConnection(config);
     conn.connect();
