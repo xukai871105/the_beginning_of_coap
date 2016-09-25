@@ -1,0 +1,16 @@
+{
+  "name": "microsystem",
+  "version": "0.0.1",
+  "dependencies": {
+    "body-parser": "*",
+    "coap": "*",
+    "express": "*",
+    "http": "*",
+    "mysql": "*",
+    "os": "*",
+    "path": "*",
+    "request": "*",
+    "sockjs": "*",
+    "swig": "*"
+  }
+}
