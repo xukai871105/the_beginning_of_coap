@@ -1,12 +1,14 @@
 const coap  = require('coap')
 
 var host = 'localhost'
-//host = '123.59.83.91'
+// var host = '123.59.83.91'
+// var host = '192.168.0.6'
 var device_id = '12CF'
 
-var temp = 14
-var hum = 90
-var light = 1721
+var temp = Math.round(10 + (20 - 10) * Math.random());
+var hum = Math.round(60 + (90 - 60) * Math.random());
+var light = Math.round(2000 + (3000 - 2000) * Math.random());
+console.log('temp, hum, light', temp, hum, light);
 
 var pathname = 'devices/' +  device_id;
 var req = coap.request({

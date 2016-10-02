@@ -17,7 +17,7 @@ route.post('/devices/{device_id}', function(req, res) {
     var temp = payload.temp;
     var hum = payload.hum;
     var light = payload.light;
-    console.log('temp %.1f, hum %.1f, light %.1f', temp, hum, light);
+    console.log('temp, hum, light', temp, hum, light);
 
     var conn = mysql.createConnection(config);
     conn.connect();

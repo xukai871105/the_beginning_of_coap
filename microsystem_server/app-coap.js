@@ -1,4 +1,4 @@
-//模块依赖
+// 模块依赖
 var coap = require('coap')
 // 引入coap路由
 var coap_routes = require('./routes/coap_index');
