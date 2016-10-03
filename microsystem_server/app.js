@@ -24,7 +24,7 @@ var host = '0.0.0.0';
 app.use('/', routes);
 
 // 启动http服务器
-var http_server = app.listen(port, host)
+app.listen(port, host);
 console.log('Http Server Listening on :' +  host + ':' + port);
 
 // 启动coap服务器

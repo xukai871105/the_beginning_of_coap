@@ -64,9 +64,7 @@ function get_device_list(callback) {
 
   conn.query("SELECT DISTINCT device_id FROM sensor_history",
     function(err, rows) {
-    if (!err) {
       callback(rows);
-    }
   });
 
   conn.end();
