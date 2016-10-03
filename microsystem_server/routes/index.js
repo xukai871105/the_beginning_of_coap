@@ -39,34 +39,22 @@ router.get('/devices/:device_id/data.json', function (req, res) {
   console.log('limit: ' + limit);
 
   var conn = mysql.createConnection(config);
-  conn.connect(function(err) {
-    console.log('connected as id ' + conn.threadId);
-  });
+  conn.connect();
 
   conn.query('SELECT COUNT(*) as total FROM sensor_history WHERE device_id=?', 
     [device_id],
     function(err, result) {
-      if (!err) {
-        total = result[0].total;
-        console.log("total: " + total);
-      }
+      total = result[0].total;
   });
 
   conn.query('SELECT * FROM sensor_history WHERE device_id=? order by id desc limit ?, ?', 
     [device_id, offset, limit],
     function(err, result) {
-      if (!err) {
         rows = result;
-      } else {
-        console.log(err.message);
-      }
   });
 
-  conn.end(function(err){
-    if (!err) {
-      console.log("db close");
-      res.json({total:total, rows:rows});
-    }
+  conn.end(function(err) {
+    res.json({total:total, rows:rows});
   });
 });
 
