@@ -1,9 +1,8 @@
 const coap  = require('coap')
 
-var host = 'localhost'
-// var host = '123.59.83.91'
-// var host = '192.168.0.6'
-var device_id = '12CF'
+// var host = 'localhost'
+var host = '192.168.0.6'
+var device_id = '12CD'
 
 var temp = Math.round(10 + (20 - 10) * Math.random());
 var hum = Math.round(60 + (90 - 60) * Math.random());
