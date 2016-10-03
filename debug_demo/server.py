@@ -1,33 +1,15 @@
 #!/usr/bin/env python3
 
-# This file is part of the Python aiocoap library project.
-#
-# Copyright (c) 2012-2014 Maciej Wasilak <http://sixpinetrees.blogspot.com/>,
-#               2013-2014 Christian Amsüss <c.amsuess@energyharvesting.at>
-#
-# aiocoap is free software, this file is published under the MIT license as
-# described in the accompanying LICENSE file.
-
 import datetime
 import logging
-
 import asyncio
-
 import aiocoap.resource as resource
 import aiocoap
 
-
 class BlockResource(resource.Resource):
-    """
-    Example resource which supports GET and PUT methods. It sends large
-    responses, which trigger blockwise transfer.
-    """
-
     def __init__(self):
         super(BlockResource, self).__init__()
-        self.content = ("This is the resource's default content. It is padded "\
-                "with numbers to be large enough to trigger blockwise "\
-                "transfer.\n" + "0123456789\n" * 100).encode("ascii")
+        self.content = ("0123456789\n" * 100).encode("ascii")
 
     @asyncio.coroutine
     def render_get(self, request):
@@ -39,20 +21,12 @@ class BlockResource(resource.Resource):
         print('PUT payload: %s' % request.payload)
         self.content = request.payload
         payload = ("I've accepted the new payload. You may inspect it here in "\
-                "Python's repr format:\n\n%r"%self.content).encode('utf8')
+                "Python's repr format:\n\n%r" % self.content).encode('utf8')
         return aiocoap.Message(code=aiocoap.CHANGED, payload=payload)
 
-
 class SeparateLargeResource(resource.Resource):
-    """
-    Example resource which supports GET method. It uses asyncio.sleep to
-    simulate a long-running operation, and thus forces the protocol to send
-    empty ACK first.
-    """
-
     def __init__(self):
         super(SeparateLargeResource, self).__init__()
-#        self.add_param(resource.LinkParam("title", "Large resource."))
 
     @asyncio.coroutine
     def render_get(self, request):
@@ -65,10 +39,6 @@ class SeparateLargeResource(resource.Resource):
         return aiocoap.Message(code=aiocoap.CONTENT, payload=payload)
 
 class TimeResource(resource.ObservableResource):
-    """
-    Example resource that can be observed. The `notify` method keeps scheduling
-    itself, and calles `update_state` to trigger sending notifications.
-    """
     def __init__(self):
         super(TimeResource, self).__init__()
 
@@ -91,25 +61,18 @@ class TimeResource(resource.ObservableResource):
         return aiocoap.Message(code=aiocoap.CONTENT, payload=payload)
 
 # logging setup
-
 logging.basicConfig(level=logging.INFO)
 logging.getLogger("coap-server").setLevel(logging.DEBUG)
 
 def main():
     # Resource tree creation
     root = resource.Site()
-
     root.add_resource(('.well-known', 'core'), resource.WKCResource(root.get_resources_as_linkheader))
-
     root.add_resource(('time',), TimeResource())
-
     root.add_resource(('other', 'block'), BlockResource())
-
     root.add_resource(('other', 'separate'), SeparateLargeResource())
-
     asyncio.async(aiocoap.Context.create_server_context(root))
-
     asyncio.get_event_loop().run_forever()
 
 if __name__ == "__main__":
-main()
+    main()
