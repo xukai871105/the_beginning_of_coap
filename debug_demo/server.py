@@ -32,10 +32,11 @@ class SeparateLargeResource(resource.Resource):
     def render_get(self, request):
         yield from asyncio.sleep(3)
 
-        payload = "Three rings for the elven kings under the sky, seven rings"\
-                "for dwarven lords in their halls of stone, nine rings for"\
-                "mortal men doomed to die, one ring for the dark lord on his"\
-                "dark throne.".encode('ascii')
+        payload = "CoAP is an open Internet standard for the Web of Things."\
+                " It's based on the Web's core pipe: HTTP, "\
+                "but has many differences to allow it to be used "\
+                "by very resource-constrained devices "\
+                "and local radio networks.".encode('ascii')
         return aiocoap.Message(code=aiocoap.CONTENT, payload=payload)
 
 class TimeResource(resource.ObservableResource):
@@ -46,7 +47,7 @@ class TimeResource(resource.ObservableResource):
 
     def notify(self):
         self.updated_state()
-        asyncio.get_event_loop().call_later(6, self.notify)
+        asyncio.get_event_loop().call_later(5, self.notify)
 
     def update_observation_count(self, count):
         if count:
@@ -57,7 +58,7 @@ class TimeResource(resource.ObservableResource):
 
     @asyncio.coroutine
     def render_get(self, request):
-        payload = datetime.datetime.now().strftime("%Y-%m-%d %H:%M").encode('ascii')
+        payload = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S").encode('ascii')
         return aiocoap.Message(code=aiocoap.CONTENT, payload=payload)
 
 # logging setup
