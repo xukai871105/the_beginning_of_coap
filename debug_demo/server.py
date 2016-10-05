@@ -9,7 +9,23 @@ import aiocoap
 class BlockResource(resource.Resource):
     def __init__(self):
         super(BlockResource, self).__init__()
-        self.content = ("0123456789\n" * 100).encode("ascii")
+        self.content = ("Constrained Application Protocol (CoAP) is a software protocol "\
+            "intended to be used in very simple electronics devices, "\
+            "allowing them to communicate interactively over the Internet. "\
+            "It is particularly targeted for small, low-power sensors, switches, valves "
+            "and similar components that need to be controlled or supervised remotely, "\
+            "through standard Internet networks. CoAP is an application layer protocol "\
+            "that is intended for use in resource-constrained internet devices, "\
+            "such as WSN nodes. CoAP is designed to easily translate to HTTP "\
+            "for simplified integration with the web, "\
+            "while also meeting specialized requirements such as multicast support, "\
+            "very low overhead, and simplicity.[Multicast, low overhead, "\
+            "and simplicity are extremely important for Internet of Things (IoT) "\
+            "and Machine-to-Machine (M2M) devices, "\
+            "which tend to be deeply embedded and have much less memory "\
+            "and power supply than traditional internet devices have. "\
+            "Therefore, efficiency is very important. "\
+            "CoAP can run on most devices that support UDP or a UDP analogue.\n").encode("ascii")
 
     @asyncio.coroutine
     def render_get(self, request):
@@ -20,7 +36,7 @@ class BlockResource(resource.Resource):
     def render_put(self, request):
         print('PUT payload: %s' % request.payload)
         self.content = request.payload
-        payload = ("I've accepted the new payload. You may inspect it here in "\
+        payload = ("accepted the new payload. You may inspect it here in "\
                 "Python's repr format:\n\n%r" % self.content).encode('utf8')
         return aiocoap.Message(code=aiocoap.CHANGED, payload=payload)
 
