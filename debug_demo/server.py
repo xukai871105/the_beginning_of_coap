@@ -38,7 +38,7 @@ class BlockResource(resource.Resource):
         self.content = request.payload
         payload = ("accepted the new payload. You may inspect it here in "\
                 "Python's repr format:\n\n%r" % self.content).encode('utf8')
-        return aiocoap.Message(code=aiocoap.CHANGED, payload=payload)
+        return aiocoap.Message(code=aiocoap.CHANGED, payload=self.content)
 
 class SeparateLargeResource(resource.Resource):
     def __init__(self):
