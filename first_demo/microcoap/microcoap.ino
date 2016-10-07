@@ -18,21 +18,7 @@ static uint8_t scratch_raw[32];
 static coap_rw_buffer_t scratch_buf = {scratch_raw, sizeof(scratch_raw)};
 
 static char light = '0';
-const uint16_t rsplen = 128;
-static char rsp[128] = "";
-
 static int led = 8;
-
-static const coap_endpoint_path_t path_well_known_core = {2, {".well-known", "core"}};
-static int handle_get_well_known_core(coap_rw_buffer_t *scratch, const coap_packet_t *inpkt, 
-                                    coap_packet_t *outpkt, uint8_t id_hi, uint8_t id_lo)
-{
-    return coap_make_response(scratch, outpkt, 
-                            (const uint8_t *)rsp, strlen(rsp), 
-                            id_hi, id_lo, &inpkt->tok, 
-                            COAP_RSPCODE_CONTENT, 
-                            COAP_CONTENTTYPE_APPLICATION_LINKFORMAT);
-}
 
 static const coap_endpoint_path_t path_hello = {1, {"hello"}};
 static int handle_get_hello(coap_rw_buffer_t *scratch, 
@@ -61,12 +47,6 @@ static int handle_put_light(coap_rw_buffer_t *scratch,
                             const coap_packet_t *inpkt, coap_packet_t *outpkt, 
                             uint8_t id_hi, uint8_t id_lo)
 {
-  if (inpkt->payload.len == 0)
-    return coap_make_response(scratch, outpkt, 
-                        NULL, 0, 
-                        id_hi, id_lo, &inpkt->tok, 
-                        COAP_RSPCODE_BAD_REQUEST, 
-                        COAP_CONTENTTYPE_TEXT_PLAIN);
   if (inpkt->payload.p[0] == '1')
   {
       light = '1';
@@ -88,58 +68,16 @@ static int handle_put_light(coap_rw_buffer_t *scratch,
 
 coap_endpoint_t endpoints[] =
 {
-  {COAP_METHOD_GET, handle_get_well_known_core, &path_well_known_core, "ct=40"},
   {COAP_METHOD_GET, handle_get_hello, &path_hello, "ct=0"},
   {COAP_METHOD_GET, handle_get_light, &path_light, "ct=0"},
   {COAP_METHOD_PUT, handle_put_light, &path_light, NULL},
   {(coap_method_t)0, NULL, NULL, NULL}
 };
 
-void build_rsp(const coap_endpoint_t *ep)
-{
-    uint16_t len = rsplen;
-    int i;
-
-    len--;
-    
-    while(NULL != ep->handler)
-    {
-        if (NULL == ep->core_attr) {
-            ep++;
-            continue;
-        }
-
-        if (0 < strlen(rsp)) {
-            strncat(rsp, ",", len);
-            len--;
-        }
-
-        strncat(rsp, "<", len);
-        len--;
-
-        for (i = 0; i < ep->path->count; i++) {
-            strncat(rsp, "/", len);
-            len--;
-
-            strncat(rsp, ep->path->elems[i], len);
-            len -= strlen(ep->path->elems[i]);
-        }
-
-        strncat(rsp, ">;", len);
-        len -= 2;
-
-        strncat(rsp, ep->core_attr, len);
-        len -= strlen(ep->core_attr);
-
-        ep++;
-    }
-}
 void endpoint_setup(void)
 {                
     pinMode(led, OUTPUT);
-    build_rsp(endpoints);
 }
-
 
 void setup()
 {
