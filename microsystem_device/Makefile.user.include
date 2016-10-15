@@ -1,0 +1,7 @@
+APPDIRS+=$(USER_FOLDER)/apps
+TARGETDIRS+=$(USER_FOLDER)/platform
+
+#define contiki folder
+#CONTIKI=$(USER_FOLDER)/../contiki-3.0
+CONTIKI=/home/user/contiki
+include $(CONTIKI)/Makefile.include
