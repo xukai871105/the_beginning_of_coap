@@ -11,7 +11,7 @@ IPAddress ip(192, 168, 0, 10);
 IPAddress gateway(192, 168, 0, 1);
 IPAddress subnet(255, 255, 255, 0);
 
-EthernetClient client;
+// EthernetClient client;
 EthernetUDP udp;
 uint8_t packetbuf[256];
 static uint8_t scratch_raw[32];
