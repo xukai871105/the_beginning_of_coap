@@ -38,9 +38,7 @@ PROCESS_THREAD(hello_world_process, ev, data)
 				leds_on(LEDS_RED);
 				ctimer_set(&ct, ER_COAP_NO_NET_LED_DURATION, net_led_off, NULL);
 				etimer_set(&et, ER_COAP_DEMO_NET_CONNECT_PERIODIC);
-			}
-			else
-			{
+			} else {
 				leds_on(LEDS_GREEN);
 				printf("device join in the network!\n");
 				printf("Hello CC2538\n");       

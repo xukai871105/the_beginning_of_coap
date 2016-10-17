@@ -8,20 +8,43 @@
 #include "dev/leds.h"
 #include "ip64-addr.h"
 
-#define COAP_HEART 1
-
 #define DEBUG DEBUG_PRINT
 #include "net/ip/uip-debug.h"
 
 #define LOCAL_PORT      UIP_HTONS(COAP_DEFAULT_PORT + 1)
 #define REMOTE_PORT     UIP_HTONS(COAP_DEFAULT_PORT)
 
-PROCESS(er_example_client, "Erbium Example Client");
-AUTOSTART_PROCESSES(&er_example_client);
+PROCESS(coap_client_example, "coap client example");
+PROCESS(hello_world_process, "hello world process");
+AUTOSTART_PROCESSES(&hello_world_process);
+/*---------------------------------------------------------------------------*/
+PROCESS_THREAD(hello_world_process, ev, data)
+{
+  static struct etimer et_red;
+  PROCESS_BEGIN();
+
+  etimer_set(&et_red, CLOCK_SECOND / 8);
+  printf("hello world!\n");
+  while(1) {
+    PROCESS_YIELD();
+
+    if(ev == PROCESS_EVENT_TIMER && etimer_expired(&et_red)) {
+      if(uip_ds6_get_global(ADDR_PREFERRED) != NULL) {
+        leds_off(LEDS_RED);
+        printf("device has joined the net\n");
+        process_start(&coap_client_example, NULL);
+      } else {
+        leds_toggle(LEDS_RED);
+        etimer_set(&et_red, CLOCK_SECOND / 8);
+      }
+    }
+  }
+
+  PROCESS_END();
+}
 
 uip_ipaddr_t server_ipaddr;
 
-/* This function is will be passed to COAP_BLOCKING_REQUEST() to handle responses. */
 void
 client_chunk_handler(void *response)
 {
@@ -32,15 +55,14 @@ client_chunk_handler(void *response)
   printf("[%d]%s\n", len, (char *)chunk);
 }
 
-PROCESS_THREAD(er_example_client, ev, data)
+PROCESS_THREAD(coap_client_example, ev, data)
 {
   PROCESS_BEGIN();
 
-  static coap_packet_t request[1];      /* This way the packet can be treated as pointer as usual. */
+  /* This way the packet can be treated as pointer as usual. */
 
   uip_ip4addr_t ip4addr;
   uip_ipaddr(&ip4addr, 192, 168, 0, 3);
-
   ip64_addr_4to6(&ip4addr, &server_ipaddr);
   PRINTF("Server address: ");
   PRINT6ADDR(&server_ipaddr);
@@ -49,14 +71,12 @@ PROCESS_THREAD(er_example_client, ev, data)
   /* receives all CoAP messages */
   coap_init_engine();
 
-  //etimer_set(&et, ER_COAP_DEMO_NET_CONNECT_PERIODIC);
-
   while(1) {
     
     PROCESS_YIELD();
 
-    if(ev == sensors_event && data == &button_left_sensor) {
-      printf("left button press\n");
+    if(ev == sensors_event && data == &button_sensor) {
+      // printf("left button press\n");
       // send_packet();
 
       coap_init_message(request, COAP_TYPE_CON, COAP_GET, 0);

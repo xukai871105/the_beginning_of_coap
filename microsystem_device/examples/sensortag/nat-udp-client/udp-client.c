@@ -1,6 +1,9 @@
 #include "contiki.h"
+#include <stdio.h>
 #include "lib/random.h"
 #include "sys/ctimer.h"
+//#include "lib/random.h"
+//#include "sys/ctimer.h"
 #include "net/ip/uip.h"
 #include "net/ipv6/uip-ds6.h"
 #include "net/ip/uip-udp-packet.h"
@@ -28,7 +31,33 @@ static uip_ipaddr_t server_ipaddr;
 
 /*---------------------------------------------------------------------------*/
 PROCESS(udp_client_process, "UDP client process");
-AUTOSTART_PROCESSES(&udp_client_process);
+PROCESS(hello_world_process, "hello world process");
+AUTOSTART_PROCESSES(&hello_world_process);
+/*---------------------------------------------------------------------------*/
+PROCESS_THREAD(hello_world_process, ev, data)
+{
+  static struct etimer et_red;
+  PROCESS_BEGIN();
+
+  etimer_set(&et_red, CLOCK_SECOND / 8);
+  printf("hello world!\n");
+  while(1) {
+    PROCESS_YIELD();
+
+    if(ev == PROCESS_EVENT_TIMER && etimer_expired(&et_red)) {
+      if(uip_ds6_get_global(ADDR_PREFERRED) != NULL) {
+        leds_off(LEDS_RED);
+        printf("device has joined the net\n");
+        process_start(&udp_client_process, NULL);
+      } else {
+        leds_toggle(LEDS_RED);
+        etimer_set(&et_red, CLOCK_SECOND / 8);
+      }
+    }
+  }
+
+  PROCESS_END();
+}
 /*---------------------------------------------------------------------------*/
 static void
 tcpip_handler(void)
@@ -38,7 +67,7 @@ tcpip_handler(void)
   if(uip_newdata()) {
     str = uip_appdata;
     str[uip_datalen()] = '\0';
-    printf("DATA recv '%s'\n", str);
+    printf("data recv [%s]\n", str);
   }
 }
 /*---------------------------------------------------------------------------*/
@@ -62,7 +91,7 @@ print_local_addresses(void)
   int i;
   uint8_t state;
 
-  PRINTF("Client IPv6 addresses: ");
+  PRINTF("Client IPv6 Address: ");
   for(i = 0; i < UIP_DS6_ADDR_NB; i++) {
     state = uip_ds6_if.addr_list[i].state;
     if(uip_ds6_if.addr_list[i].isused &&
@@ -71,7 +100,7 @@ print_local_addresses(void)
       PRINTF("\n");
       /* hack to make address "final" */
       if (state == ADDR_TENTATIVE) {
-        uip_ds6_if.addr_list[i].state = ADDR_PREFERRED;
+	      uip_ds6_if.addr_list[i].state = ADDR_PREFERRED;
       }
     }
   }
@@ -82,7 +111,7 @@ print_local_addresses(void)
 }
 /*---------------------------------------------------------------------------*/
 static void
-set_global_address(void)
+set_server_address(void)
 {
   uip_ip4addr_t ip4addr;
   uip_ipaddr(&ip4addr, 192, 168, 0, 3);
@@ -96,9 +125,9 @@ PROCESS_THREAD(udp_client_process, ev, data)
 
   PROCESS_PAUSE();
 
-  set_global_address();
+  set_server_address();
   
-  PRINTF("UDP client process started\n");
+  PRINTF("udp client process started\n");
 
   print_local_addresses();
 
@@ -114,7 +143,7 @@ PROCESS_THREAD(udp_client_process, ev, data)
   PRINT6ADDR(&client_conn->ripaddr);
   PRINTF(" local/remote port %u/%u\n",
   UIP_HTONS(client_conn->lport), UIP_HTONS(client_conn->rport));
-  PRINTF("Press left button to send udp packet");
+  printf("Press left button to send udp packet");
 
   while(1) {
     
@@ -123,8 +152,8 @@ PROCESS_THREAD(udp_client_process, ev, data)
       tcpip_handler();
     }
 
-    if(ev == sensors_event && data == &button_left_sensor) {
-      printf("left button press\n");
+    if(ev == sensors_event && data == &button_sensor) {
+      // printf("left button press\n");
       send_packet();
     }
   }
