@@ -1,8 +1,8 @@
 const coap  = require('coap')
 
-// var host = 'localhost'
-var host = '192.168.0.6'
-var device_id = '12CD'
+var host = 'localhost'
+// var host = '192.168.0.6'  // change to raspberry ip address
+var device_id = 'CD12'
 
 var temp = Math.round(10 + (20 - 10) * Math.random());
 var hum = Math.round(60 + (90 - 60) * Math.random());
@@ -15,12 +15,12 @@ var req = coap.request({
     pathname: pathname, 
     method: 'POST'
 });
-req.setOption("Content-Format", "application/json");
+req.setOption('Content-Format', 'application/json');
 
 var payload = {
-	temp: temp,
-	hum: hum,
-	light: light
+    temp: temp,
+    hum: hum,
+    light: light
 }
 req.write(JSON.stringify(payload));
 
