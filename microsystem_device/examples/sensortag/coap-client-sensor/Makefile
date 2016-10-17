@@ -12,7 +12,6 @@ SMALL=1
 APPS += er-coap
 APPS += rest-engine
 
-
 CONTIKI_WITH_IPV6 = 1
 
 USER_FOLDER = ../../..

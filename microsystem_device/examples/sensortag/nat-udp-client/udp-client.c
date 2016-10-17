@@ -71,7 +71,7 @@ print_local_addresses(void)
       PRINTF("\n");
       /* hack to make address "final" */
       if (state == ADDR_TENTATIVE) {
-	      uip_ds6_if.addr_list[i].state = ADDR_PREFERRED;
+        uip_ds6_if.addr_list[i].state = ADDR_PREFERRED;
       }
     }
   }
@@ -113,11 +113,11 @@ PROCESS_THREAD(udp_client_process, ev, data)
   PRINTF("Created a connection with the server ");
   PRINT6ADDR(&client_conn->ripaddr);
   PRINTF(" local/remote port %u/%u\n",
-	UIP_HTONS(client_conn->lport), UIP_HTONS(client_conn->rport));
+  UIP_HTONS(client_conn->lport), UIP_HTONS(client_conn->rport));
   PRINTF("Press left button to send udp packet");
 
   while(1) {
-
+    
     PROCESS_YIELD();
     if(ev == tcpip_event) {
       tcpip_handler();

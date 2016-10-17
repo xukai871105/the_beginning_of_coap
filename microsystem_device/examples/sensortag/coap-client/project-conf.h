@@ -1,14 +1,5 @@
-
-/**
- * \file
- *      Erbium (Er) example project configuration.
- * \author
- *      Matthias Kovatsch <kovatsch@inf.ethz.ch>
- */
-
 #ifndef __PROJECT_ERBIUM_CONF_H__
 #define __PROJECT_ERBIUM_CONF_H__
-
 
 /* Disabling RDC and CSMA for demo purposes. Core updates often
    require more memory. */

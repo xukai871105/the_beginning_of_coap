@@ -1,11 +1,3 @@
-
-/**
-* \file
-*      Erbium (Er) CoAP client example.
-* \author
-*      Matthias Kovatsch <kovatsch@inf.ethz.ch>
-*/
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -67,13 +59,13 @@ PROCESS_THREAD(er_example_client, ev, data)
       printf("left button press\n");
       // send_packet();
 
-        coap_init_message(request, COAP_TYPE_CON, COAP_GET, 0);
-        coap_set_header_uri_path(request, "time");
-        PRINT6ADDR(&server_ipaddr);
-        PRINTF(" : %u\n", UIP_HTONS(REMOTE_PORT));
-        printf("uri hello coap response :\n");
-        COAP_BLOCKING_REQUEST(&server_ipaddr, REMOTE_PORT, request,
-                              client_chunk_handler);
+      coap_init_message(request, COAP_TYPE_CON, COAP_GET, 0);
+      coap_set_header_uri_path(request, "time");
+      PRINT6ADDR(&server_ipaddr);
+      PRINTF(" : %u\n", UIP_HTONS(REMOTE_PORT));
+      printf("uri hello coap response :\n");
+      COAP_BLOCKING_REQUEST(&server_ipaddr, REMOTE_PORT, request,
+                            client_chunk_handler);
     }
 
   }

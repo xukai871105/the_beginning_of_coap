@@ -1,11 +1,3 @@
-
-/**
-* \file
-*      Erbium (Er) CoAP client example.
-* \author
-*      Matthias Kovatsch <kovatsch@inf.ethz.ch>
-*/
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -28,7 +20,6 @@ PROCESS(er_example_client, "Erbium Example Client");
 AUTOSTART_PROCESSES(&er_example_client);
 
 uip_ipaddr_t server_ipaddr;
-
 
 /* This function is will be passed to COAP_BLOCKING_REQUEST() to handle responses. */
 void
@@ -60,22 +51,22 @@ PROCESS_THREAD(er_example_client, ev, data)
 
   //etimer_set(&et, ER_COAP_DEMO_NET_CONNECT_PERIODIC);
 
-  while(1)  {
+  while(1) {
+    
     PROCESS_YIELD();
 
     if(ev == sensors_event && data == &button_left_sensor) {
       printf("left button press\n");
       // send_packet();
 
-        coap_init_message(request, COAP_TYPE_CON, COAP_GET, 0);
-        coap_set_header_uri_path(request, "time");
-        PRINT6ADDR(&server_ipaddr);
-        PRINTF(" : %u\n", UIP_HTONS(REMOTE_PORT));
-        printf("uri hello coap response :\n");
-        COAP_BLOCKING_REQUEST(&server_ipaddr, REMOTE_PORT, request,
-                              client_chunk_handler);
+      coap_init_message(request, COAP_TYPE_CON, COAP_GET, 0);
+      coap_set_header_uri_path(request, "time");
+      PRINT6ADDR(&server_ipaddr);
+      PRINTF(" : %u\n", UIP_HTONS(REMOTE_PORT));
+      printf("uri hello coap response :\n");
+      COAP_BLOCKING_REQUEST(&server_ipaddr, REMOTE_PORT, request,
+                            client_chunk_handler);
     }
-
   }
   PROCESS_END();
 }
