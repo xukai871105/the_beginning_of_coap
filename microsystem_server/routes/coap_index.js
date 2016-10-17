@@ -5,9 +5,11 @@ var mysql = require('mysql');
 var route = new router();
 
 var config = require('../config/db-config.json');
+var pool  = mysql.createPool(config);
 
 route.post('/devices/{device_id}', function(req, res) {
     console.log('----------------------------------------');
+    console.log(new Date().toLocaleString());
     console.log('add sensor datapoint to database');
 
     var device_id = req.params.device_id;
@@ -19,6 +21,24 @@ route.post('/devices/{device_id}', function(req, res) {
     var light = payload.light;
     console.log('temp, hum, light', temp, hum, light);
 
+    pool.getConnection(function(err, connection) {
+        connection.query('INSERT INTO sensor_history SET device_id=?, temp=?, hum=?, light=?, time=NOW()', 
+        [device_id, temp, hum, light],
+        function(err, results) {
+            if (err) {
+                console.log(err.message);
+                res.code = '4.00';
+                res.end(new Date().toLocaleString());
+            } else {
+                res.code = '2.01';
+                res.end(new Date().toLocaleString());
+            };
+
+            connection.release();
+        });
+    });
+
+/*
     var conn = mysql.createConnection(config);
     conn.connect();
 
@@ -27,17 +47,18 @@ route.post('/devices/{device_id}', function(req, res) {
         function(err, rows) {
             if (err) {
                 console.log("client error: " + err.message);
-                res.code = 4.00;
-                res.end();
+                res.code = '4.00';
+                res.end(new Date().toLocaleString());
             } else {
                 res.code = '2.01';
-                res.end();
+                res.end(new Date().toLocaleString());
             }
     });
 
     conn.end(function(err) {
         console.log('db close');
     });
+*/
 });
 
 // 测试目的路由，没有具体含义
@@ -61,6 +82,5 @@ route.get('/test', function(req, res) {
     res.code = '2.05';
     res.end(new Date().toLocaleString())
 });
-
 
 module.exports = route;
