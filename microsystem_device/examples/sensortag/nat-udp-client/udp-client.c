@@ -1,14 +1,11 @@
 #include "contiki.h"
 #include <stdio.h>
-#include "lib/random.h"
-#include "sys/ctimer.h"
-//#include "lib/random.h"
-//#include "sys/ctimer.h"
 #include "net/ip/uip.h"
 #include "net/ipv6/uip-ds6.h"
 #include "net/ip/uip-udp-packet.h"
 
-#include "button-sensor.h"
+#include "dev/leds.h"
+#include "dev/button-sensor.h"
 // #include "dev/button-sensor.h"
 
 #include "ip64-addr.h"
