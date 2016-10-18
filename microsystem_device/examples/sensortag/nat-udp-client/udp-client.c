@@ -6,7 +6,6 @@
 
 #include "dev/leds.h"
 #include "dev/button-sensor.h"
-// #include "dev/button-sensor.h"
 
 #include "ip64-addr.h"
 
@@ -21,7 +20,7 @@
 #define DEBUG DEBUG_PRINT
 #include "net/ip/uip-debug.h"
 
-#define MAX_PAYLOAD_LEN		30
+#define MAX_PAYLOAD_LEN     30
 
 static struct uip_udp_conn *client_conn;
 static uip_ipaddr_t server_ipaddr;
@@ -97,7 +96,7 @@ print_local_addresses(void)
       PRINTF("\n");
       /* hack to make address "final" */
       if (state == ADDR_TENTATIVE) {
-	      uip_ds6_if.addr_list[i].state = ADDR_PREFERRED;
+        uip_ds6_if.addr_list[i].state = ADDR_PREFERRED;
       }
     }
   }

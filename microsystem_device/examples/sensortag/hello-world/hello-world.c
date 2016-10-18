@@ -1,4 +1,3 @@
-
 #include "contiki.h"
 #include "dev/leds.h"
 #include "net/ipv6/uip-ds6.h"
