@@ -1,6 +1,8 @@
+# make BOARD=sensortag/cc2650
 DEFINES+=PROJECT_CONF_H=\"project-conf.h\"
-CONTIKI_PROJECT = hello-world
+DEFINES+=STARTUP_CONF_VERBOSE=1
 
+CONTIKI_PROJECT = hello-world
 all: $(CONTIKI_PROJECT)
 
 CONTIKI_WITH_IPV6 = 1

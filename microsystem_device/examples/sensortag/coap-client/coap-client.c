@@ -77,7 +77,7 @@ PROCESS_THREAD(coap_client_example, ev, data)
     if(ev == sensors_event && data == &button_sensor) {
       // printf("left button press\n");
       coap_init_message(request, COAP_TYPE_CON, COAP_GET, 0);
-      coap_set_header_uri_path(request, "time");
+      coap_set_header_uri_path(request, "test-time");
       PRINT6ADDR(&server_ipaddr);
       PRINTF(" : %u\n", UIP_HTONS(REMOTE_PORT));
       printf("coap response :\n");
