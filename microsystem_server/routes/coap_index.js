@@ -27,16 +27,19 @@ route.post('/devices/{device_id}', function(req, res) {
         function(err, results) {
             if (err) {
                 console.log(err.message);
-                res.code = '4.00';
-                res.end(new Date().toLocaleString());
+                // res.code = '4.00';
+                // res.end();
             } else {
-                res.code = '2.01';
-                res.end(new Date().toLocaleString());
+                // res.code = '2.01';
+                // res.end();
             };
 
             connection.release();
         });
     });
+
+    res.code = '2.01';
+    res.end();
 
 /*
     var conn = mysql.createConnection(config);
@@ -78,8 +81,9 @@ route.get('/test-db', function(req, res) {
 });
 
 // 测试目的路由，没有具体含义
-route.get('/test', function(req, res) {
+route.get('/test-time', function(req, res) {
     res.code = '2.05';
+    console.log(new Date().toLocaleString());
     res.end(new Date().toLocaleString())
 });
 
