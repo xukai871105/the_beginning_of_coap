@@ -10,7 +10,8 @@ var pool  = mysql.createPool(config);
 route.post('/devices/{device_id}', function(req, res) {
     console.log('----------------------------------------');
     console.log(new Date().toLocaleString());
-    console.log(Math.round(new Date().getTime()/1000));
+    var ts = Math.round(new Date().getTime()/1000)
+    console.log(ts);
     console.log('add sensor datapoint to database');
 
     var device_id = req.params.device_id;
@@ -39,8 +40,10 @@ route.post('/devices/{device_id}', function(req, res) {
         });
     });
 
-    res.code = '2.01';
-    res.end(Math.round(new Date().getTime()/1000));
+    res.code = '2.04';
+    // res.setOption('Content-Format', 'application/json');
+    // res.end(new Date().toLocaleString())
+    res.end(ts);
 
 /*
     var conn = mysql.createConnection(config);
