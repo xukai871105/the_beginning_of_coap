@@ -32,7 +32,7 @@ PROCESS_THREAD(hello_world_process, ev, data)
 
   PROCESS_END();
 }
-/*---------------------------------------------------------------------------*/
+
 PROCESS_THREAD(simple_process, ev, data)
 {
   static struct etimer et_green;
@@ -50,5 +50,3 @@ PROCESS_THREAD(simple_process, ev, data)
   }
   PROCESS_END();
 }
-/*---------------------------------------------------------------------------*/
-

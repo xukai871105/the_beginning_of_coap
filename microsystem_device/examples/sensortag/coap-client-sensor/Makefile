@@ -10,6 +10,8 @@ all: coap-client-sensor
 APPS += er-coap
 APPS += rest-engine
 
+PROJECT_SOURCEFILES += sensor-process.c  coap-post-process.c
+
 CONTIKI_WITH_IPV6 = 1
 
 USER_FOLDER = ../../..
