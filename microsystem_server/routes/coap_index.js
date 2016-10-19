@@ -41,9 +41,9 @@ route.post('/devices/{device_id}', function(req, res) {
     });
 
     res.code = '2.04';
-    // res.setOption('Content-Format', 'application/json');
+    res.setOption('Content-Format', 'application/json');
     // res.end(new Date().toLocaleString())
-    res.end(ts);
+    res.end(JSON.stringify({ts: Math.round(new Date().getTime()/1000)}))
 
 /*
     var conn = mysql.createConnection(config);
