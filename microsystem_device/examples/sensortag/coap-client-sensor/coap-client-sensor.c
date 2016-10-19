@@ -17,13 +17,19 @@
 #define LOCAL_PORT      UIP_HTONS(COAP_DEFAULT_PORT + 1)
 #define REMOTE_PORT     UIP_HTONS(COAP_DEFAULT_PORT)
 
-static process_event_t event_data_ready;
-
 uip_ipaddr_t server_ipaddr;
 static struct etimer et;
 static int hum = 0;
 static int temp = 0;
 static int light = 0;
+
+static process_event_t sensor_data_ready;
+typedef struct sensor_data_{
+  int temp;
+  int hum;
+  int light;
+} sensor_data_t;
+sensor_data_t sensor_give;
 
 PROCESS(sensor_process, "sensor monitor");
 PROCESS(coap_post_process, "coap client");
@@ -63,13 +69,15 @@ get_hdc_reading()
   int value;
   value = hdc_1000_sensor.value(HDC_1000_SENSOR_TYPE_TEMP);
   if(value != CC26XX_SENSOR_READING_ERROR) {
-    temp = value / 100;
+    // temp = value / 100;
+    sensor_give.temp = value / 100;
     printf("HDC: Temp = %d.%02d C\n", value / 100, value % 100);
   }
 
   value = hdc_1000_sensor.value(HDC_1000_SENSOR_TYPE_HUMIDITY);
   if(value != CC26XX_SENSOR_READING_ERROR) {
-    hum = value / 100;
+    // hum = value / 100;
+    sensor_give.hum = value / 100;
     printf("HDC: Humidity = %d.%02d %%RH\n", value / 100, value % 100);
   }
 }
@@ -80,7 +88,8 @@ get_light_reading()
   int value;
   value = opt_3001_sensor.value(0);
   if(value != CC26XX_SENSOR_READING_ERROR) {
-    light = value / 100;
+    // light = value / 100;
+    sensor_give.hum = value / 100;
     printf("OPT: Light = %d.%02d lux\n", value / 100, value % 100);
   }
 }
@@ -89,7 +98,7 @@ PROCESS_THREAD(sensor_process, ev, data)
 {
   PROCESS_BEGIN();
   printf("sensor process start!\n");
-  event_data_ready = process_alloc_event(); 
+  sensor_data_ready = process_alloc_event(); 
 
   etimer_set(&et, CLOCK_SECOND * 20);
 
@@ -105,7 +114,7 @@ PROCESS_THREAD(sensor_process, ev, data)
         SENSORS_ACTIVATE(hdc_1000_sensor);
     } else if(ev == sensors_event && data == &hdc_1000_sensor) {
         get_hdc_reading();
-        process_post(&coap_post_process, event_data_ready, NULL);
+        process_post(&coap_post_process, sensor_data_ready, (void *)&sensor_give);
     }
 
   }
@@ -148,8 +157,9 @@ PROCESS_THREAD(coap_post_process, ev, data)
 
   while(1) {
     PROCESS_YIELD();
-    if (ev == event_data_ready) {
-      printf("event");
+    if (ev == sensor_data_ready) {
+      printf("event\n");
+      sensor_data_t sensor_take = *(sensor_data_t*)data;
       coap_init_message(request, COAP_TYPE_CON, COAP_POST, 0);
       coap_set_token(request, (uint8_t*)"1234", 4);
       coap_set_header_uri_path(request, url);
@@ -157,7 +167,8 @@ PROCESS_THREAD(coap_post_process, ev, data)
 
       char payload[32];
       memset(payload, 0x00, 32);
-      int len = sprintf(payload, "{\"temp\":%d, \"hum\":%d, \"light\":%d}", temp, hum, light);
+      int len = sprintf(payload, "{\"temp\":%d, \"hum\":%d, \"light\":%d}", 
+              sensor_take.temp, sensor_take.hum, sensor_take.light);
       coap_set_payload(request, (uint8_t *)payload, len);
 
       PRINT6ADDR(&server_ipaddr); PRINTF(" : %u\n", UIP_HTONS(REMOTE_PORT));
