@@ -10,13 +10,12 @@
 #include "dev/leds.h"
 #include "board-peripherals.h"
 
-process_event_t sensor_data_ready;
+extern process_event_t sensor_data_ready;
 typedef struct sensor_data_{
   int temp;
   int hum;
   int light;
 } sensor_data_t;
-sensor_data_t sensor_give;
 
 PROCESS_NAME(sensor_process);
 #endif

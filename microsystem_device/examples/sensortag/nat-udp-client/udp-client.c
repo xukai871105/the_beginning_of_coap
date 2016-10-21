@@ -105,14 +105,7 @@ print_local_addresses(void)
   PRINT6ADDR(&server_ipaddr);
   PRINTF("\n");
 }
-/*---------------------------------------------------------------------------*/
-static void
-set_server_address(void)
-{
-  uip_ip4addr_t ip4addr;
-  uip_ipaddr(&ip4addr, 192, 168, 0, 3);
-  ip64_addr_4to6(&ip4addr, &server_ipaddr);
-}
+
 /*---------------------------------------------------------------------------*/
 PROCESS_THREAD(udp_client_process, ev, data)
 {
@@ -121,9 +114,12 @@ PROCESS_THREAD(udp_client_process, ev, data)
 
   PROCESS_PAUSE();
 
-  set_server_address();
   
-  PRINTF("udp client process started\n");
+  printf("udp client process started\n");
+
+  uip_ip4addr_t ip4addr;
+  uip_ipaddr(&ip4addr, 192, 168, 0, 3);
+  ip64_addr_4to6(&ip4addr, &server_ipaddr);
 
   print_local_addresses();
 
@@ -149,7 +145,6 @@ PROCESS_THREAD(udp_client_process, ev, data)
     }
 
     if(ev == sensors_event && data == &button_sensor) {
-      // printf("left button press\n");
       send_packet();
     }
   }
