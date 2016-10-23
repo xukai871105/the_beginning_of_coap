@@ -29,43 +29,14 @@ route.post('/devices/{device_id}', function(req, res) {
         function(err, results) {
             if (err) {
                 console.log(err.message);
-                // res.code = '4.00';
-                // res.end();
-            } else {
-                // res.code = '2.01';
-                // res.end();
-            };
-
+            } 
             connection.release();
         });
     });
 
     res.code = '2.04';
     res.setOption('Content-Format', 'application/json');
-    // res.end(new Date().toLocaleString())
     res.end(JSON.stringify({ts: Math.round(new Date().getTime()/1000)}))
-
-/*
-    var conn = mysql.createConnection(config);
-    conn.connect();
-
-    conn.query('INSERT INTO sensor_history SET device_id=?, temp=?, hum=?, light=?, time=NOW()',
-        [device_id, temp, hum, light],
-        function(err, rows) {
-            if (err) {
-                console.log("client error: " + err.message);
-                res.code = '4.00';
-                res.end(new Date().toLocaleString());
-            } else {
-                res.code = '2.01';
-                res.end(new Date().toLocaleString());
-            }
-    });
-
-    conn.end(function(err) {
-        console.log('db close');
-    });
-*/
 });
 
 // 测试目的路由，没有具体含义
