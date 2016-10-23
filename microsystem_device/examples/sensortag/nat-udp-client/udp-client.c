@@ -15,12 +15,11 @@
 #define UDP_CLIENT_PORT 8765
 #define UDP_SERVER_PORT 5678
 
-#define UDP_EXAMPLE_ID  190
 
 #define DEBUG DEBUG_PRINT
 #include "net/ip/uip-debug.h"
 
-#define MAX_PAYLOAD_LEN     30
+#define MAX_PAYLOAD_LEN     32
 
 static struct uip_udp_conn *client_conn;
 static uip_ipaddr_t server_ipaddr;
@@ -112,9 +111,6 @@ PROCESS_THREAD(udp_client_process, ev, data)
 
   PROCESS_BEGIN();
 
-  PROCESS_PAUSE();
-
-  
   printf("udp client process started\n");
 
   uip_ip4addr_t ip4addr;

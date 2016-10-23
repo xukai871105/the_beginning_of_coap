@@ -73,7 +73,6 @@ PROCESS_THREAD(coap_client_example, ev, data)
   while(1) {
     
     PROCESS_YIELD();
-
     if(ev == sensors_event && data == &button_sensor) {
       // printf("left button press\n");
       coap_init_message(request, COAP_TYPE_CON, COAP_GET, 0);
