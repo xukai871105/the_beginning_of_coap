@@ -67,18 +67,18 @@ PROCESS_THREAD(coap_client_example, ev, data)
   PRINT6ADDR(&server_ipaddr);
   PRINTF("\n");
 
-  /* receives all CoAP messages */
   coap_init_engine();
 
   while(1) {
     
     PROCESS_YIELD();
     if(ev == sensors_event && data == &button_sensor) {
-      // printf("left button press\n");
+
       coap_init_message(request, COAP_TYPE_CON, COAP_GET, 0);
       coap_set_header_uri_path(request, "test-time");
+
       PRINT6ADDR(&server_ipaddr);
-      PRINTF(" : %u\n", UIP_HTONS(REMOTE_PORT));
+      PRINTF(":%u\n", UIP_HTONS(REMOTE_PORT));
       printf("coap response :\n");
       COAP_BLOCKING_REQUEST(&server_ipaddr, REMOTE_PORT, request,
                             client_chunk_handler);

@@ -13,14 +13,12 @@ static void get_hdc_reading()
   int value;
   value = hdc_1000_sensor.value(HDC_1000_SENSOR_TYPE_TEMP);
   if(value != CC26XX_SENSOR_READING_ERROR) {
-    // temp = value / 100;
     sensor_give.temp = value / 100;
     printf("HDC: Temp = %d.%02d C\n", value / 100, value % 100);
   }
 
   value = hdc_1000_sensor.value(HDC_1000_SENSOR_TYPE_HUMIDITY);
   if(value != CC26XX_SENSOR_READING_ERROR) {
-    // hum = value / 100;
     sensor_give.hum = value / 100;
     printf("HDC: Humidity = %d.%02d %%RH\n", value / 100, value % 100);
   }
@@ -31,7 +29,6 @@ static void get_light_reading()
   int value;
   value = opt_3001_sensor.value(0);
   if(value != CC26XX_SENSOR_READING_ERROR) {
-    // light = value / 100;
     sensor_give.light = value / 100;
     printf("OPT: Light = %d.%02d lux\n", value / 100, value % 100);
   }
