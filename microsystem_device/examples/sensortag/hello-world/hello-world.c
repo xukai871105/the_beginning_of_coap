@@ -3,11 +3,11 @@
 #include "net/ipv6/uip-ds6.h"
 #include <stdio.h>
 
-/*---------------------------------------------------------------------------*/
+
 PROCESS(hello_world_process, "hello world process");
 PROCESS(simple_process, "simple process");
 AUTOSTART_PROCESSES(&hello_world_process);
-/*---------------------------------------------------------------------------*/
+
 PROCESS_THREAD(hello_world_process, ev, data)
 {
   static struct etimer et_red;
