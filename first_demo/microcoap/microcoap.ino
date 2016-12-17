@@ -1,21 +1,22 @@
 
+#include <stdint.h>
 #include <SPI.h>
 #include <Ethernet.h>
-#include <stdint.h>
 #include <EthernetUdp.h>
 #include "coap.h"
 
-#define PORT 5683
 byte mac[] = {0x00, 0xAA, 0xBB, 0xCC, 0xDE, 0x02};
 IPAddress ip(192, 168, 0, 10);
 IPAddress gateway(192, 168, 0, 1);
 IPAddress subnet(255, 255, 255, 0);
-
-// EthernetClient client;
 EthernetUDP udp;
+
+static char rsp[256];
 uint8_t packetbuf[256];
 static uint8_t scratch_raw[32];
 static coap_rw_buffer_t scratch_buf = {scratch_raw, sizeof(scratch_raw)};
+
+void build_rsp(void);
 
 static char light = '0';
 static int led = 8;
@@ -47,41 +48,48 @@ static int handle_put_light(coap_rw_buffer_t *scratch,
                             const coap_packet_t *inpkt, coap_packet_t *outpkt, 
                             uint8_t id_hi, uint8_t id_lo)
 {
-  if (inpkt->payload.p[0] == '1')
-  {
-      light = '1';
-      digitalWrite(led, HIGH);
-      Serial.println("ON");
-  }
-  else
-  {
-      light = '0';
-      digitalWrite(led, LOW);
-      Serial.println("OFF");
-  }
-  return coap_make_response(scratch, outpkt, 
+    if (inpkt->payload.p[0] == '1')
+    {
+        light = '1';
+        digitalWrite(led, HIGH);
+        Serial.println("ON");
+    }
+    else
+    {
+        light = '0';
+        digitalWrite(led, LOW);
+        Serial.println("OFF");
+    }
+    return coap_make_response(scratch, outpkt, 
                               (const uint8_t *)&light, 1, 
                               id_hi, id_lo, &inpkt->tok, 
                               COAP_RSPCODE_CHANGED, 
                               COAP_CONTENTTYPE_TEXT_PLAIN);
 }
 
+static const coap_endpoint_path_t path_well_known_core = {2, {".well-known", "core"}};
+static int handle_get_well_known_core(coap_rw_buffer_t *scratch, const coap_packet_t *inpkt, coap_packet_t *outpkt, uint8_t id_hi, uint8_t id_lo)
+{
+    return coap_make_response(scratch, outpkt, 
+                            (const uint8_t *)rsp, strlen(rsp), 
+                            id_hi, id_lo, &inpkt->tok, 
+                            COAP_RSPCODE_CONTENT, 
+                            COAP_CONTENTTYPE_APPLICATION_LINKFORMAT);
+}
+
 coap_endpoint_t endpoints[] =
 {
-  {COAP_METHOD_GET, handle_get_hello, &path_hello, "ct=0"},
-  {COAP_METHOD_GET, handle_get_light, &path_light, "ct=0"},
-  {COAP_METHOD_PUT, handle_put_light, &path_light, NULL},
-  {(coap_method_t)0, NULL, NULL, NULL}
+    {COAP_METHOD_GET, handle_get_well_known_core, &path_well_known_core, "ct=40"},
+    {COAP_METHOD_GET, handle_get_hello, &path_hello, "ct=0"},
+    {COAP_METHOD_GET, handle_get_light, &path_light, "ct=0"},
+    {COAP_METHOD_PUT, handle_put_light, &path_light, NULL},
+    {(coap_method_t)0, NULL, NULL, NULL}
 };
-
-void endpoint_setup(void)
-{                
-    pinMode(led, OUTPUT);
-}
 
 void setup()
 {
     int i;
+    pinMode(led, OUTPUT);
     Serial.begin(9600);
 
     Ethernet.begin(mac, ip);
@@ -92,10 +100,8 @@ void setup()
         Serial.print("."); 
     }
     Serial.println();
-    udp.begin(PORT);
-
-    coap_setup();
-    endpoint_setup();
+    udp.begin(5683);
+    build_rsp(); 
 }
 
 void udp_send(const uint8_t *buf, int buflen)
@@ -149,3 +155,43 @@ void loop()
     }
 }
 
+void build_rsp(void)
+{
+    int len = sizeof(rsp) / sizeof(rsp[0]);
+    const coap_endpoint_t *ep = endpoints;
+    int i;
+
+    len--; // Null-terminated string
+
+    while(NULL != ep->handler)
+    {
+        if (NULL == ep->core_attr) {
+            ep++;
+            continue;
+        }
+
+        if (0 < strlen(rsp)) {
+            strncat(rsp, ",", len);
+            len--;
+        }
+
+        strncat(rsp, "<", len);
+        len--;
+
+        for (i = 0; i < ep->path->count; i++) {
+            strncat(rsp, "/", len);
+            len--;
+
+            strncat(rsp, ep->path->elems[i], len);
+            len -= strlen(ep->path->elems[i]);
+        }
+
+        strncat(rsp, ">;", len);
+        len -= 2;
+
+        strncat(rsp, ep->core_attr, len);
+        len -= strlen(ep->core_attr);
+
+        ep++;
+    }
+}
