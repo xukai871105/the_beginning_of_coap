@@ -7,12 +7,16 @@ import asyncio
 import aiocoap.resource as resource
 import aiocoap
 
-class TimeResource(resource.Resource):
+class TimeResource(resource.ObservableResource):
     def __init__(self):
         super(TimeResource, self).__init__()
+        self.notify()
 
-    @asyncio.coroutine
-    def render_get(self, request):
+    def notify(self):
+        self.updated_state()
+        asyncio.get_event_loop().call_later(10, self.notify)
+
+    async def render_get(self, request):
         payload = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S").encode('ascii')
         return aiocoap.Message(code=aiocoap.CONTENT, payload=payload)
 
@@ -26,7 +30,7 @@ def main():
 
     root.add_resource(('.well-known', 'core'), resource.WKCResource(root.get_resources_as_linkheader))
     root.add_resource(('time',), TimeResource())
-    asyncio.async(aiocoap.Context.create_server_context(root))
+    asyncio.Task(aiocoap.Context.create_server_context(root))
     asyncio.get_event_loop().run_forever()
 
 if __name__ == "__main__":
