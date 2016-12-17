@@ -12,7 +12,7 @@ def main():
     protocol = yield from Context.create_client_context()
 
     request = Message(code=GET)
-    request.set_request_uri('coap://192.168.0.8/time')
+    request.set_request_uri('coap://192.168.1.29/time')
 
     try:
         response = yield from protocol.request(request).response
