@@ -4,9 +4,11 @@ import java.net.Inet4Address;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.SocketException;
+import java.util.Date;
 
 import org.eclipse.californium.core.CoapResource;
 import org.eclipse.californium.core.CoapServer;
+import org.eclipse.californium.core.coap.CoAP.ResponseCode;
 import org.eclipse.californium.core.network.CoapEndpoint;
 import org.eclipse.californium.core.network.EndpointManager;
 import org.eclipse.californium.core.network.config.NetworkConfig;
@@ -20,12 +22,9 @@ public class HelloCoAPServer extends CoapServer {
     public static void main(String[] args) {
         
         try {
-
         	HelloCoAPServer server = new HelloCoAPServer();
- 
-            server.addEndpoints();
+            // server.addEndpoints();
             server.start();
-
         } catch (SocketException e) {
             System.err.println("Failed to initialize server: " + e.getMessage());
         }
