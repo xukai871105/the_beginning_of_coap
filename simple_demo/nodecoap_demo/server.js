@@ -1,5 +1,5 @@
-const coap    = require('coap') 
-const server  = coap.createServer()
+const coap = require('coap') 
+const server = coap.createServer()
 
 server.on('request', function(req, res) {
   console.log('method:' + req.method + ' url:' + req.url)
