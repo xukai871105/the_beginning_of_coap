@@ -12,23 +12,22 @@ public class HelloCoAPServer {
 
     public static void main(String[] args) {
         
-    	CoapServer server = new CoapServer();
-		server.add(new CoapResource("hello") {
-			@Override
-			public void handleGET(CoapExchange exchange) {
-				exchange.respond(ResponseCode.CONTENT, "Hello Security!");
-			}
-		});
-		server.add(new CoapResource("time") {
-			@Override
-			public void handleGET(CoapExchange exchange) {
-				
-				Date date = new Date();
-				exchange.respond(ResponseCode.CONTENT, 
-							new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(date));
-			}
-		});
+        CoapServer server = new CoapServer();
+        server.add(new CoapResource("hello") {
+            @Override
+            public void handleGET(CoapExchange exchange) {
+                exchange.respond(ResponseCode.CONTENT, "Hello CoAP!");
+            }
+        });
+        server.add(new CoapResource("time") {
+            @Override
+            public void handleGET(CoapExchange exchange) {
+                
+                Date date = new Date();
+                exchange.respond(ResponseCode.CONTENT, 
+                            new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(date));
+            }
+        });
         server.start();
     }
-
 }
