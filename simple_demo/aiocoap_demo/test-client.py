@@ -3,24 +3,25 @@
 import logging
 import asyncio
 
-from aiocoap import *
+import aiocoap
 
 logging.basicConfig(level=logging.INFO)
 
-@asyncio.coroutine
-def main():
-    protocol = yield from Context.create_client_context()
+async def main():
+    protocol = await aiocoap.Context.create_client_context()
 
-    request = Message(code=GET)
-    request.set_request_uri('coap://192.168.1.29/time')
+    request = aiocoap.Message(code=aiocoap.Code.GET, uri='coap://192.168.0.6/time')
 
     try:
-        response = yield from protocol.request(request).response
+        response = await protocol.request(request).response
     except Exception as e:
         print('Failed to fetch resource:')
         print(e)
     else:
-        print('Result: %s\n%r'%(response.code, response.payload))
+        print('Result: %s\n%r' % (response.code, response.payload))
 
 if __name__ == "__main__":
     asyncio.get_event_loop().run_until_complete(main())
+
+
+
