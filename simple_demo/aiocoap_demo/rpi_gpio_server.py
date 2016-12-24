@@ -32,14 +32,6 @@ class GPIOResource(resource.Resource):
         self.content = json.dumps(led_status).encode("ascii")
         return aiocoap.Message(code=aiocoap.Code.CHANGED, payload=self.content)
 
-class TimeResource(resource.Resource):
-    def __init__(self):
-        super(TimeResource, self).__init__()
-
-    async def render_get(self, request):
-        payload = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S").encode('ascii')
-        return aiocoap.Message(code=aiocoap.Code.CONTENT, payload=payload)
-
 logging.basicConfig(level=logging.INFO)
 logging.getLogger("coap-server").setLevel(logging.DEBUG)
 
@@ -51,7 +43,6 @@ def main():
     # Resource tree creation
     root = resource.Site()
     root.add_resource(('.well-known', 'core'), resource.WKCResource(root.get_resources_as_linkheader))
-    root.add_resource(('time',), TimeResource())
     root.add_resource(('gpio',), GPIOResource())
     asyncio.Task(aiocoap.Context.create_server_context(root))
     asyncio.get_event_loop().run_forever()
