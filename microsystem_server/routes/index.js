@@ -50,7 +50,7 @@ router.get('/devices/:device_id/data.json', function (req, res) {
   conn.query('SELECT * FROM sensor_history WHERE device_id=? order by id desc limit ?, ?', 
     [device_id, offset, limit],
     function(err, result) {
-        rows = result;
+      rows = result;
   });
 
   conn.end(function(err) {
