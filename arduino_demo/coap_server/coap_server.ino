@@ -16,8 +16,8 @@ IPAddress subnet(255, 255, 255, 0);
 EthernetClient client;
 EthernetUDP udp;
 
-#define PIN 6
-Adafruit_NeoPixel strip = Adafruit_NeoPixel(16, PIN, NEO_GRB + NEO_KHZ800);
+#define WS2812_PIN 6
+Adafruit_NeoPixel strip = Adafruit_NeoPixel(16, WS2812_PIN, NEO_GRB + NEO_KHZ800);
 
 uint8_t packetbuf[256];
 static uint8_t scratch_raw[32];
@@ -146,6 +146,7 @@ void loop()
     {
         udp.read(packetbuf, sizeof(packetbuf));
 
+        Serial.print("UDP:");
         for (i = 0; i < sz; i++)
         {
             Serial.print(packetbuf[i], HEX);
