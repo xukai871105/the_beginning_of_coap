@@ -6,5 +6,6 @@ CoAP是受限制的应用协议(Constrained Application Protocol)的简称。随
 - CoAP核心内容：二进制首部、工作模式、重传机制、响应吗、选项和媒体类型等；
 - CoAP扩展内容：CoAP资源描述和CoAP观察者；
 - 使用C语言、Python或Node.js实现CoAP客户端与服务器；
-- 使用Copper插件和Wireshark调试CoAP。 
+- 使用Copper插件和Wireshark调试CoAP。
+
 ![CoAP in Action](img/book.jpg)
