@@ -8,4 +8,4 @@ CoAP是受限制的应用协议(Constrained Application Protocol)的简称。随
 - 使用C语言、Python或Node.js实现CoAP客户端与服务器；
 - 使用Copper插件和Wireshark调试CoAP。
 
-![CoAP in Action](img/book.jpg)
+![CoAP in Action](img/book_600.jpg)
