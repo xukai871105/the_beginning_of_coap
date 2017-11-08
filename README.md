@@ -8,9 +8,12 @@ CoAP是受限制的应用协议(Constrained Application Protocol)的简称。随
 - 使用C语言、Python或Node.js实现CoAP客户端与服务器；
 - 使用Copper插件和Wireshark调试CoAP。
 
-![CoAP in Action](img/book_600.jpg)
+![CoAP in Action](http://ovqdgsm5c.bkt.clouddn.com/17-10-12/96986591.jpg)
 
-### 图书勘误
+## 图书勘误
 ### 最新版火狐浏览器不能使用Copper插件
 最新版火狐浏览器（56版本及以上）已经*不能正确*支持Copper插件。如果想尝试本书中关于Copper插件的相关功能，请使用火狐 55.0版本或更低版本。
-火狐浏览器的历史版本可在官网FTP服务器中获取——[FTP服务器](http://ftp.mozilla.org/pub/firefox/releases/)
+火狐浏览器的历史版本可通过以下途径获取
+- [FTP服务器](http://ftp.mozilla.org/pub/firefox/releases/)
+- [火狐浏览器下载与安装](http://www.firefox.com.cn/download/#more)
+![](http://ovqdgsm5c.bkt.clouddn.com/17-11-8/191344.jpg)
